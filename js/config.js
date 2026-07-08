@@ -9,7 +9,7 @@
  *   'firebase' → Firestore + Firebase Storage (public site, login-protected Darkroom)
  * To go live for everyone: fill js/firebase-config.js, set this to 'firebase', git push.
  */
-export const BACKEND = 'local';
+export const BACKEND = 'firebase';
 
 export const COLLECTIONS = ['Portraiture', 'Cinematic Film', 'On Location', 'Commissioned'];
 

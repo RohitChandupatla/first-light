@@ -7,10 +7,11 @@
  * security is enforced by Firestore/Storage rules + Auth).
  */
 export const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_PROJECT.appspot.com",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID",
+  apiKey: "AIzaSyDpy4PkbAjXIn5GkrvJtgvD-h6FaO88QtU",
+  authDomain: "first-light-c2c58.firebaseapp.com",
+  projectId: "first-light-c2c58",
+  storageBucket: "first-light-c2c58.firebasestorage.app",
+  messagingSenderId: "162411630031",
+  appId: "1:162411630031:web:a5a6de8e6cf977437316ba",
+  measurementId: "G-NYX2DZJN92"
 };
