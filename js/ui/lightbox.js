@@ -64,21 +64,11 @@ function paint() {
   }
   holder.appendChild(media);
 
-  $('lbpl').textContent = `Plate ${String(cur + 1).padStart(2, '0')} / ${String(plates.length).padStart(2, '0')}`;
-  $('lbtitle').textContent = p.title || '';
-  $('lbdesc').textContent = p.story || '';
+  $('lbpl').textContent = '';
+  $('lbtitle').textContent = '';
+  $('lbdesc').textContent = '';
+  $('lbexif').innerHTML = '';
 
-  const rows = [
-    ['Series', p.collection],
-    ['Shot on', p.gear],
-    ['Location', p.location],
-    ['Date', p.dateTaken],
-    ['Type', p.type === 'video' ? `Film${p.duration ? ` · ${Math.round(p.duration)}s` : ''}` : 'Photograph'],
-    ['Size', p.size ? fmtBytes(p.size) : null],
-  ].filter(([, v]) => v);
-  $('lbexif').innerHTML = rows
-    .map(([k, v]) => `<div><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`)
-    .join('');
 }
 
 /* ---------------- Input bindings ---------------- */

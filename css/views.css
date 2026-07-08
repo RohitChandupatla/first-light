@@ -80,13 +80,13 @@
 
 /* ---------- Lightbox ---------- */
 .lb { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(9,10,13,.97); overscroll-behavior: contain; }
-.lb.active { display: grid; grid-template-columns: 1fr 320px; animation: fade .3s; }
+.lb.active { display: grid; grid-template-columns: 1fr; animation: fade .3s; }
 .lb .stage { display: flex; align-items: center; justify-content: center; padding: 40px; position: relative; min-width: 0; touch-action: pan-y; }
 .lb .media { max-width: 100%; max-height: 82vh; border: 1px solid var(--line); animation: zoom .4s; background: var(--ink-2); will-change: transform; }
 img.media { object-fit: contain; }
 video.media { width: min(100%, 1000px); }
 @keyframes zoom { from { transform: scale(.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.lb .side { border-left: 1px solid var(--line); padding: 56px 32px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+.lb .side { display: none; }
 .lb .side .pl { font-family: var(--font-mono); font-size: .64rem; letter-spacing: .16em; color: var(--dawn-4); text-transform: uppercase; margin-bottom: 18px; }
 .lb .side h3 { font-family: var(--font-serif); font-weight: 400; font-size: 1.9rem; line-height: 1.05; margin-bottom: 14px; }
 .lb .side .desc { font-size: .9rem; color: var(--fog); font-weight: 300; line-height: 1.7; margin-bottom: 26px; }
@@ -100,6 +100,8 @@ video.media { width: min(100%, 1000px); }
 .lb-nav.prev { left: 24px; } .lb-nav.next { right: 24px; }
 .lb .hint { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: .56rem; letter-spacing: .18em; color: var(--fog-dim); text-transform: uppercase; display: none; }
 
+
 /* ---------- Darkroom login gate ---------- */
 .dr-login { padding: 48px 0; }
 .login-err { font-family: var(--font-mono); font-size: .68rem; color: var(--warn); min-height: 1.2em; }
+.status.feat { color: var(--dawn-4); border-color: var(--dawn-4); }

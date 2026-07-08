@@ -118,10 +118,19 @@ export async function renderManage() {
       </div>
       <button class="status ${p.published ? 'live' : 'draft'}" data-action="plate-toggle" data-id="${p.id}">${p.published ? 'Live' : 'Draft'}</button>
       <div class="acts">
+        <button class="iconbtn ${p.featured ? 'feat' : ''}" data-action="plate-feature" data-id="${p.id}">${p.featured ? '★ Featured' : '☆ Feature'}</button>
         <button class="iconbtn" data-action="plate-edit" data-id="${p.id}">Edit</button>
         <button class="iconbtn danger" data-action="plate-delete" data-id="${p.id}">Delete</button>
       </div>
     </div>`).join('');
+}
+
+export async function toggleFeature(id) {
+  const p = await Plates.byId(id);
+  if (!p) return;
+  p.featured = !p.featured;
+  await Plates.save(p);
+  toast(p.featured ? 'Added to featured showcase.' : 'Removed from showcase.');
 }
 
 export async function togglePlate(id) {

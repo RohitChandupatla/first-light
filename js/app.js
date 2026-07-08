@@ -9,6 +9,8 @@ import { onPlatesChanged, Auth } from './services/data.js';
 import * as Gallery from './ui/gallery.js';
 import * as Lightbox from './ui/lightbox.js';
 import * as Darkroom from './ui/darkroom.js';
+import * as Carousel from './ui/carousel.js';
+
 
 /* ---------------- View routing ---------------- */
 function renderDarkroomGate() {
@@ -47,6 +49,7 @@ async function doLogout() {
   renderDarkroomGate();
   toast('Signed out.');
 }
+
 function showSite() {
   $('darkroom').classList.remove('active');
   $('site').style.display = 'block';
@@ -54,6 +57,18 @@ function showSite() {
 function goSection(id) {
   showSite();
   requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }));
+}
+
+/* ---------------- Featured carousel ---------------- */
+Carousel.onClick((p) => {
+  const i = Gallery.getVisible().findIndex((x) => x.id === p.id);
+  if (i >= 0) Lightbox.open(i);
+});
+
+async function refreshFeatured() {
+  const { Plates } = await import('./services/data.js');
+  const pub = await Plates.published();
+  Carousel.render(pub.filter((p) => p.featured));
 }
 
 /* ---------------- Delegated actions ---------------- */
@@ -78,8 +93,11 @@ const actions = {
   'edit-save': (el) => Darkroom.saveEditor(el.dataset.id),
   'edit-cancel': () => Darkroom.renderManage(),
   'save-settings': () => Darkroom.saveSettingsForm(),
+  'plate-feature': (el) => Darkroom.toggleFeature(el.dataset.id),
   'login': () => doLogin(),
   'logout': () => doLogout(),
+  
+
 };
 
 document.addEventListener('click', (e) => {
@@ -113,6 +131,7 @@ dz.addEventListener('drop', (e) => Darkroom.ingest(e.dataTransfer.files));
 /* ---------------- Reactive re-render ---------------- */
 onPlatesChanged(async () => {
   await Gallery.render();
+  await refreshFeatured();
   if ($('darkroom').classList.contains('active')) Darkroom.renderManage();
 });
 
@@ -134,6 +153,7 @@ function bindReveals() {
   }
   await Darkroom.loadSettingsForm();
   await Gallery.render();
+  await refreshFeatured();
   Lightbox.bind();
   bindReveals();
 

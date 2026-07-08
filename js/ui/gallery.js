@@ -10,7 +10,8 @@ import { $, esc, fmtBytes, URLPool, mediaSrc } from '../core/dom.js';
 
 const pool = new URLPool();
 let visible = [];            // plates currently in the grid (post-filter)
-let currentFilter = 'All';
+let currentFilter = null;   // nothing selected on load — grid stays empty
+
 
 export const getVisible = () => visible;
 export const getFilter = () => currentFilter;
@@ -28,7 +29,7 @@ export async function render() {
   $('demoTag').style.display = demo ? 'block' : 'none';
 
   const source = demo ? demoPlates() : live;
-  visible = currentFilter === 'All' ? source : source.filter((p) => p.collection === currentFilter);
+  visible = !currentFilter ? [] : currentFilter === 'All' ? source : source.filter((p) => p.collection === currentFilter);
 
   renderFilters();
   renderGrid();
@@ -44,6 +45,12 @@ function renderFilters() {
 
 function renderGrid() {
   const grid = $('grid');
+  if (!currentFilter) {
+    grid.innerHTML = '';
+    $('emptyNote').style.display = 'block';
+    $('emptyNote').innerHTML = 'Choose a collection above to explore the work.';
+    return;
+  }
   $('emptyNote').style.display = visible.length ? 'none' : 'block';
 
   grid.innerHTML = visible.map((p, i) => {
