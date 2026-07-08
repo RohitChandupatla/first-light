@@ -28,8 +28,10 @@ export function render(featured) {
       ${slides.map((p, i) => `
         <div class="car-slide ${i === 0 ? 'active' : ''}" data-i="${i}">
           ${p.type === 'video'
-            ? `<video class="car-media" muted loop playsinline preload="metadata" poster="${mediaSrc(pool, p.thumb)}"><source src="${mediaSrc(pool, p.blob)}"></video>`
-            : `<img class="car-media" src="${mediaSrc(pool, p.blob || p.thumb)}" alt="${esc(p.title || '')}">`}
+            ? `<div class="car-bg" style="background-image:url('${mediaSrc(pool, p.thumb)}')"></div>
+               <video class="car-media" muted loop playsinline preload="metadata" poster="${mediaSrc(pool, p.thumb)}"><source src="${mediaSrc(pool, p.blob)}"></video>`
+            : `<div class="car-bg" style="background-image:url('${mediaSrc(pool, p.blob || p.thumb)}')"></div>
+               <img class="car-media" src="${mediaSrc(pool, p.blob || p.thumb)}" alt="${esc(p.title || '')}">`}
         </div>`).join('')}
     </div>
     ${slides.length > 1 ? `
