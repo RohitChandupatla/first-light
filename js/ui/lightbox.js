@@ -65,7 +65,7 @@ function paint() {
   holder.appendChild(media);
 
   $('lbpl').textContent = `Plate ${String(cur + 1).padStart(2, '0')} / ${String(plates.length).padStart(2, '0')}`;
-  $('lbtitle').textContent = p.title;
+  $('lbtitle').textContent = p.title || '';
   $('lbdesc').textContent = p.story || '';
 
   const rows = [

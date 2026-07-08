@@ -57,7 +57,7 @@ function renderGrid() {
         <span class="pl">Pl. ${String(i + 1).padStart(2, '0')}</span>
         <span class="type">${p.type === 'video' ? 'Film' : esc(p.collection || 'Photo')}</span>
         <div class="img">${media}${p.type === 'video' ? '<div class="playic"><span>▶</span></div>' : ''}</div>
-        <div class="cap"><div><div class="t">${esc(p.title)}</div><div class="exif">${esc(exif)}</div></div></div>
+        <div class="cap"><div><div class="exif">${esc(exif)}</div></div></div>
       </div>`;
   }).join('');
 }

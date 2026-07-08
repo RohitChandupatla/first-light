@@ -32,7 +32,7 @@
 .progress .bar { height: 100%; background: var(--dawn-4); width: 0; transition: width .3s; }
 
 .staged { display: flex; flex-direction: column; gap: 2px; margin-bottom: 26px; }
-.stage-item { display: grid; grid-template-columns: 72px 1fr 1fr auto; gap: 16px; align-items: center; background: var(--ink-2); border: 1px solid var(--line); padding: 12px 14px; }
+.stage-item { display: grid; grid-template-columns: 72px 1fr auto; gap: 16px; align-items: center; background: var(--ink-2); border: 1px solid var(--line); padding: 12px 14px; }
 .stage-item img { width: 72px; height: 72px; object-fit: cover; background: var(--ink-3); display: block; }
 .stage-item input, .stage-item select { background: var(--ink-3); border: 1px solid var(--line); color: var(--paper); padding: 10px 12px; min-height: var(--touch); border-radius: 2px; font-family: var(--font-body); font-size: .88rem; width: 100%; }
 .stage-item input:focus, .stage-item select:focus { outline: none; border-color: var(--dawn-4); }

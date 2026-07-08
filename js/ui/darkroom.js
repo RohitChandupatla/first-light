@@ -26,7 +26,7 @@ export async function ingest(files) {
       const isVideo = file.type.startsWith('video/');
       const entry = {
         id: Plates.newId(),
-        title: file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '),
+        title: '',
         type: isVideo ? 'video' : 'image',
         size: file.size,
         blob: file,
@@ -57,7 +57,6 @@ export function renderStaged() {
   $('staged').innerHTML = staged.map((p) => `
     <div class="stage-item" data-id="${p.id}">
       <img src="${mediaSrc(stagePool, p.thumb)}" alt="">
-      <input type="text" value="${esc(p.title)}" data-field="title" aria-label="Plate title">
       <select data-field="collection" aria-label="Collection">
         ${COLLECTIONS.map((c) => `<option ${p.collection === c ? 'selected' : ''}>${c}</option>`).join('')}
       </select>
@@ -81,19 +80,26 @@ export function stageRemove(id) {
 
 export async function publishStaged(live) {
   if (!staged.length) return;
+  const val = (id) => $(id)?.value.trim() ?? '';   // null-safe — won't crash if a field is missing
   const meta = {
-    gear: $('batchGear').value.trim(),
-    location: $('batchLoc').value.trim(),
-    dateTaken: $('batchDate').value,
-    story: $('batchStory').value.trim(),
+    gear: val('batchGear'),
+    location: val('batchLoc'),
+    dateTaken: val('batchDate'),
+    story: val('batchStory'),
   };
   const batch = staged.map((p) => ({ ...p, ...meta, published: live }));
-  await Plates.saveMany(batch);
+  try {
+    await Plates.saveMany(batch);
+  } catch (e) {
+    console.error('publish failed:', e);
+    toast('Upload failed — see console.');
+    return;
+  }
 
   const n = staged.length;
   staged = [];
   renderStaged();
-  ['batchGear', 'batchLoc', 'batchDate', 'batchStory'].forEach((id) => { $(id).value = ''; });
+  ['batchGear', 'batchLoc', 'batchDate', 'batchStory'].forEach((id) => { const el = $(id); if (el) el.value = ''; });
   toast(live ? `Published ${n} plate${n > 1 ? 's' : ''} — live on your portfolio.` : `Saved ${n} draft${n > 1 ? 's' : ''}.`);
   if (live) switchTab('develop');
 }
