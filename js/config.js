@@ -30,12 +30,12 @@ export const GRID_SPANS = ['c7 wide', 'c5 tall', 'c4 tall', 'c4 tall', 'c4 tall'
 
 export const DEFAULT_SETTINGS = {
   stmt: 'I photograph the hour most people sleep through. First light is unrepeatable — soft, low, and gone in minutes — and everything I make chases that same quality of attention.',
-  note: 'The studio works across portraiture, on-location, and short film. Every frame is developed by hand and delivered as a finished piece, not a proof. Based in Dallas; happy to travel for the right story.',
+  note: 'My practice spans portraiture, on-location storytelling, and short-form film. Every frame is developed by hand and delivered as a finished piece, not a proof. Based in Dallas; happy to travel for the right story.',
   hero: 'Photography and film for people who care how their story is told. Shot on location, developed by hand, delivered with intention.',
-  email: '',
-  ig: '',
+  email: 'firstlightcaptures@outlook.com',
+  ig: 'firstlight_captures',
   base: 'Dallas, TX',
-  kit: 'Bodies: Sony A7 IV\nPrimes: 35 · 50 · 85mm\nDevelop: DaVinci · Lightroom\nFormats: Stills · 4K 24fps\nBased: Dallas, TX',
+  kit: 'Bodies: Sony A7 IV\nLenses: 16-35 · 50 · 85 · 100-400mm\nDevelop: DaVinci  · Photoshop · Lightroom\nBased: Dallas, TX',
 };
 
 /** Placeholder plates shown only until the first real publish. */
