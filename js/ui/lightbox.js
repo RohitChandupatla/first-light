@@ -4,7 +4,7 @@
  * swipe gestures on touch (left/right = navigate, down = close)
  * with live drag feedback for a native-app feel.
  */
-import { $, esc, fmtBytes, URLPool } from '../core/dom.js';
+import { $, esc, fmtBytes, URLPool, mediaSrc } from '../core/dom.js';
 import { getVisible } from './gallery.js';
 
 const pool = new URLPool();
@@ -53,14 +53,14 @@ function paint() {
     media.controls = true;
     media.playsInline = true;
     media.preload = 'metadata';
-    media.src = pool.url(p.blob);
-    media.poster = pool.url(p.thumb);
+    media.src = mediaSrc(pool, p.blob);
+    media.poster = mediaSrc(pool, p.thumb);
   } else {
     media = document.createElement('img');
     media.className = 'media';
     media.alt = p.title;
     media.decoding = 'async';
-    media.src = pool.url(p.blob);
+    media.src = mediaSrc(pool, p.blob);
   }
   holder.appendChild(media);
 

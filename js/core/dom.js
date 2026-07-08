@@ -28,3 +28,6 @@ export class URLPool {
   url(blob) { const u = URL.createObjectURL(blob); this.#urls.push(u); return u; }
   free() { this.#urls.forEach((u) => URL.revokeObjectURL(u)); this.#urls = []; }
 }
+
+/** Media may be a Blob (local backend) or a URL string (cloud backend). */
+export const mediaSrc = (pool, m) => (typeof m === 'string' ? m : pool.url(m));

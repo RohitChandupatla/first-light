@@ -2,6 +2,15 @@
  * FIRST LIGHT — Configuration
  * All tunables live here. No magic values elsewhere.
  */
+
+/**
+ * Storage backend:
+ *   'local'    → IndexedDB (private to your browser — dev/preview)
+ *   'firebase' → Firestore + Firebase Storage (public site, login-protected Darkroom)
+ * To go live for everyone: fill js/firebase-config.js, set this to 'firebase', git push.
+ */
+export const BACKEND = 'local';
+
 export const COLLECTIONS = ['Portraiture', 'Cinematic Film', 'On Location', 'Commissioned'];
 
 export const DB = {
@@ -20,13 +29,13 @@ export const MEDIA = {
 export const GRID_SPANS = ['c7 wide', 'c5 tall', 'c4 tall', 'c4 tall', 'c4 tall', 'c5 tall', 'c7 wide'];
 
 export const DEFAULT_SETTINGS = {
-  stmt: 'I work in the hour most people sleep through. First light is unrepeatable—soft, low, and fleeting. Whether still or in motion, everything I make chases that same attention.',
+  stmt: 'I photograph the hour most people sleep through. First light is unrepeatable — soft, low, and gone in minutes — and everything I make chases that same quality of attention.',
   note: 'The studio works across portraiture, on-location, and short film. Every frame is developed by hand and delivered as a finished piece, not a proof. Based in Dallas; happy to travel for the right story.',
   hero: 'Photography and film for people who care how their story is told. Shot on location, developed by hand, delivered with intention.',
   email: '',
   ig: '',
   base: 'Dallas, TX',
-  kit: 'Bodies: Sony A7 IV\nGlass: 16-35  · 50 · 85 · 100-400mm\nDevelop: DaVinci · Photoshop · Lightroom\nFormats: Stills · 4K 24fps\nBased: Dallas, TX',
+  kit: 'Bodies: Sony A7 IV\nPrimes: 35 · 50 · 85mm\nDevelop: DaVinci · Lightroom\nFormats: Stills · 4K 24fps\nBased: Dallas, TX',
 };
 
 /** Placeholder plates shown only until the first real publish. */

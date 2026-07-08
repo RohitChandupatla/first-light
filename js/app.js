@@ -5,17 +5,47 @@
  */
 import * as db from './core/db.js';
 import { $, toast } from './core/dom.js';
-import { onPlatesChanged } from './services/repositories.js';
+import { onPlatesChanged, Auth } from './services/data.js';
 import * as Gallery from './ui/gallery.js';
 import * as Lightbox from './ui/lightbox.js';
 import * as Darkroom from './ui/darkroom.js';
 
 /* ---------------- View routing ---------------- */
-function openDarkroom() {
+function renderDarkroomGate() {
+  const authed = !Auth || Auth.current();
+  $('drLogin').style.display = authed ? 'none' : 'block';
+  $('drWork').style.display = authed ? 'block' : 'none';
+  $('logoutBtn').style.display = (Auth && Auth.current()) ? '' : 'none';
+  $('drStatus').textContent = authed
+    ? 'Bring in new frames, develop the details, and decide what the world sees.'
+    : 'Sign in to manage your portfolio. Visitors never see this area.';
+  if (authed) Darkroom.renderManage();
+}
+
+async function openDarkroom() {
   $('site').style.display = 'none';
   $('darkroom').classList.add('active');
   window.scrollTo(0, 0);
-  Darkroom.renderManage();
+  if (Auth) await Auth.ready;   // wait for restored session before gating
+  renderDarkroomGate();
+}
+
+async function doLogin() {
+  const err = $('loginErr');
+  err.textContent = '';
+  try {
+    await Auth.signIn($('loginEmail').value.trim(), $('loginPass').value);
+    renderDarkroomGate();
+    toast('Welcome back.');
+  } catch (e) {
+    err.textContent = 'Sign-in failed — check email and password.';
+  }
+}
+
+async function doLogout() {
+  await Auth.signOut();
+  renderDarkroomGate();
+  toast('Signed out.');
 }
 function showSite() {
   $('darkroom').classList.remove('active');
@@ -48,6 +78,8 @@ const actions = {
   'edit-save': (el) => Darkroom.saveEditor(el.dataset.id),
   'edit-cancel': () => Darkroom.renderManage(),
   'save-settings': () => Darkroom.saveSettingsForm(),
+  'login': () => doLogin(),
+  'logout': () => doLogout(),
 };
 
 document.addEventListener('click', (e) => {

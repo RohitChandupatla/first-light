@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#0E1014">
-<meta name="description" content="FirstLight — Captures. Made in the hour before the day begins.">
-<title>FirstLight — Captures</title>
+<meta name="description" content="First Light — photography & film portfolio. Made in the hour before the day begins.">
+<title>First Light — Photography &amp; Film</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
 
 <header>
   <button class="brand" data-action="go-section" data-target="top">
-    <b>FIRSTLIGHT</b><span>Captures</span>
+    <b>FIRST LIGHT</b><span>Photography &amp; Film</span>
   </button>
   <nav>
     <button class="nav-link site-link" data-action="go-section" data-target="work"><span class="idx">01</span>Work</button>
@@ -36,7 +36,7 @@
   <section class="hero" id="top">
     <div class="hero-inner">
       <div class="reveal">
-        <div class="eyebrow">Est. Dallas, TX</div>
+        <div class="eyebrow">Est. Dallas, TX — Available worldwide</div>
         <h1>Made in the<br>hour before<br>the day <em>begins.</em></h1>
         <p class="sub" id="heroSub"></p>
         <div class="hero-actions">
@@ -99,9 +99,20 @@
       <h2>The Darkroom</h2>
       <p id="drStatus">Bring in new frames, develop the details, and decide what the world sees.</p>
     </div>
-    <button class="btn btn-ghost" data-action="show-site">← Back to portfolio</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-ghost" id="logoutBtn" data-action="logout" style="display:none">Sign out</button><button class="btn btn-ghost" data-action="show-site">← Back to portfolio</button></div>
   </div>
 
+  <!-- Login gate (cloud backend only) -->
+  <section class="dr-login" id="drLogin" style="display:none">
+    <div class="form" style="max-width:420px">
+      <div class="fg full"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" placeholder="you@example.com"></div>
+      <div class="fg full"><label for="loginPass">Password</label><input id="loginPass" type="password" autocomplete="current-password"></div>
+      <div class="fg full"><button class="btn btn-solid" data-action="login">Enter the Darkroom</button></div>
+      <p class="login-err" id="loginErr"></p>
+    </div>
+  </section>
+
+  <div id="drWork">
   <div class="dr-tabs">
     <button class="dr-tab active" data-tab="bringin" data-action="dr-tab">Bring in frames</button>
     <button class="dr-tab" data-tab="develop" data-action="dr-tab">Develop &amp; publish</button>
@@ -161,6 +172,7 @@
       </div>
     </div>
   </section>
+  </div><!-- /drWork -->
 </div>
 
 <!-- ================= LIGHTBOX ================= -->
@@ -190,7 +202,7 @@
     </div>
   </div>
   <div class="foot-legal">
-    <span>© 2026 FirstLight — Captures</span>
+    <span>© 2026 First Light — Photography &amp; Film</span>
     <span id="footBase">Dallas, TX</span>
   </div>
 </footer>

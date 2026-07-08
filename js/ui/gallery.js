@@ -5,8 +5,8 @@
  * Plates repository.
  */
 import { COLLECTIONS, GRID_SPANS, demoPlates } from '../config.js';
-import { Plates } from '../services/repositories.js';
-import { $, esc, fmtBytes, URLPool } from '../core/dom.js';
+import { Plates } from '../services/data.js';
+import { $, esc, fmtBytes, URLPool, mediaSrc } from '../core/dom.js';
 
 const pool = new URLPool();
 let visible = [];            // plates currently in the grid (post-filter)
@@ -51,7 +51,7 @@ function renderGrid() {
     const exif = [p.gear, p.location].filter(Boolean).join(' · ') || (p.type === 'video' ? 'Film' : 'Photograph');
     const media = p.demo
       ? `<div class="photo" style="background:${p.bg}"></div>`
-      : `<img class="photo" src="${pool.url(p.thumb)}" alt="${esc(p.title)}" loading="lazy" decoding="async">`;
+      : `<img class="photo" src="${mediaSrc(pool, p.thumb)}" alt="${esc(p.title)}" loading="lazy" decoding="async">`;
     return `
       <div class="plate ${span}" data-action="open-plate" data-index="${i}" role="button" tabindex="0">
         <span class="pl">Pl. ${String(i + 1).padStart(2, '0')}</span>

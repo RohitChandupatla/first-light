@@ -99,3 +99,7 @@ video.media { width: min(100%, 1000px); }
 .lb-nav:hover { border-color: var(--dawn-4); color: var(--dawn-4); }
 .lb-nav.prev { left: 24px; } .lb-nav.next { right: 24px; }
 .lb .hint { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: .56rem; letter-spacing: .18em; color: var(--fog-dim); text-transform: uppercase; display: none; }
+
+/* ---------- Darkroom login gate ---------- */
+.dr-login { padding: 48px 0; }
+.login-err { font-family: var(--font-mono); font-size: .68rem; color: var(--warn); min-height: 1.2em; }

@@ -5,9 +5,9 @@
  * details (settings).
  */
 import { COLLECTIONS } from '../config.js';
-import { Plates, Settings } from '../services/repositories.js';
+import { Plates, Settings } from '../services/data.js';
 import { makeImageThumb, makeVideoPoster } from '../services/media.js';
-import { $, esc, fmtBytes, toast, URLPool } from '../core/dom.js';
+import { $, esc, fmtBytes, toast, URLPool, mediaSrc } from '../core/dom.js';
 
 const stagePool = new URLPool();
 const managePool = new URLPool();
@@ -56,7 +56,7 @@ export function renderStaged() {
   stagePool.free();
   $('staged').innerHTML = staged.map((p) => `
     <div class="stage-item" data-id="${p.id}">
-      <img src="${stagePool.url(p.thumb)}" alt="">
+      <img src="${mediaSrc(stagePool, p.thumb)}" alt="">
       <input type="text" value="${esc(p.title)}" data-field="title" aria-label="Plate title">
       <select data-field="collection" aria-label="Collection">
         ${COLLECTIONS.map((c) => `<option ${p.collection === c ? 'selected' : ''}>${c}</option>`).join('')}
@@ -105,7 +105,7 @@ export async function renderManage() {
   $('manageEmpty').style.display = all.length ? 'none' : 'block';
   $('manageList').innerHTML = all.map((p) => `
     <div class="dr-item" data-id="${p.id}">
-      <img class="thumb" src="${managePool.url(p.thumb)}" alt="">
+      <img class="thumb" src="${mediaSrc(managePool, p.thumb)}" alt="">
       <div>
         <div class="nm">${esc(p.title)}</div>
         <div class="sub">${esc(p.collection || '—')} · ${p.type === 'video' ? `film ${p.duration ? `${Math.round(p.duration)}s` : ''}` : 'photo'} · ${fmtBytes(p.size)}</div>
@@ -148,7 +148,7 @@ export async function openEditor(id) {
   const row = document.querySelector(`.dr-item[data-id="${id}"]`);
   if (!p || !row) return;
   row.innerHTML = `
-    <img class="thumb" src="${managePool.url(p.thumb)}" alt="">
+    <img class="thumb" src="${mediaSrc(managePool, p.thumb)}" alt="">
     <div class="dr-edit">
       <input type="text" value="${esc(p.title)}" data-edit="title" aria-label="Title">
       <select data-edit="collection" aria-label="Collection">
