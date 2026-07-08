@@ -11,7 +11,7 @@
  */
 export const BACKEND = 'firebase';
 
-export const COLLECTIONS = ['Portraiture', 'Cinematic Film', 'On Location', 'Commissioned'];
+export const COLLECTIONS = ['Portraiture', 'Cinematic Film', 'On Location', 'Events', 'Landscape'];
 
 export const DB = {
   NAME: 'firstlight',
@@ -54,7 +54,7 @@ export function demoPlates() {
     ['Marfa, Before Sunrise', 'On Location', 'image', 'Empty highway, high desert, the sky just warming.'],
     ['The Long Drive — still', 'Cinematic Film', 'video', 'A frame from a short film about leaving.'],
     ['Ren, in Window Light', 'Portraiture', 'image', 'Natural light only — the ten soft minutes.'],
-    ["Maker's Hands", 'Commissioned', 'image', 'Commissioned detail work for a craft studio.'],
+    ["Maker's Hands", 'Events', 'image', 'Events detail work for a craft studio.'],
     ['Coast Road, First Fog', 'On Location', 'image', 'Fog rolling off the water at first light.'],
     ['Dawn Sequence — frame 118', 'Cinematic Film', 'video', 'The closing frame of a dawn sequence.'],
   ];
