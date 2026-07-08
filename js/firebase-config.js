@@ -10,7 +10,7 @@ export const firebaseConfig = {
   apiKey: "AIzaSyDpy4PkbAjXIn5GkrvJtgvD-h6FaO88QtU",
   authDomain: "first-light-c2c58.firebaseapp.com",
   projectId: "first-light-c2c58",
-  storageBucket: "first-light-c2c58.firebasestorage.app",
+  storageBucket: "first-light-c2c58.appspot.com",
   messagingSenderId: "162411630031",
   appId: "1:162411630031:web:a5a6de8e6cf977437316ba",
   measurementId: "G-NYX2DZJN92"
