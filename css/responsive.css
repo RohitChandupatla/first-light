@@ -1,0 +1,64 @@
+/* ============================================================
+   FIRST LIGHT — Responsive
+   Phones → tablets → laptops → 49" super-ultrawide
+   ============================================================ */
+
+/* ---------- ≤ 820px : phones & small tablets ---------- */
+@media (max-width: 820px) {
+  :root { --pad-page: 18px; }
+
+  nav { gap: 10px; }
+  nav .site-link { display: none; }
+
+  .hero { min-height: 88vh; padding-top: 110px; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-index { display: none; }
+
+  section { padding: 72px var(--pad-page); }
+  .plate-grid { gap: 12px; }
+  .c7, .c5, .c6, .c4, .c8 { grid-column: span 12; }
+
+  .statement { grid-template-columns: 1fr; gap: 40px; }
+  .store-note { grid-template-columns: 1fr; }
+  .form { grid-template-columns: 1fr; }
+
+  .stage-item { grid-template-columns: 56px 1fr auto; }
+  .stage-item select { grid-column: 1 / -1; }
+  .dr-item { grid-template-columns: 48px 1fr auto; }
+  .dr-item .status { display: none; }
+
+  /* Lightbox becomes media + bottom info sheet */
+  .lb.active { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  .lb .stage { padding: 64px 12px 12px; }
+  .lb .media { max-height: 56vh; }
+  .lb .side { border-left: none; border-top: 1px solid var(--line); padding: 20px 20px 26px; justify-content: flex-start; max-height: 34vh; }
+  .lb .side h3 { font-size: 1.3rem; margin-bottom: 8px; }
+  .lb .side .desc { margin-bottom: 14px; font-size: .84rem; }
+  .lb .exif { padding-top: 14px; gap: 10px 16px; }
+  .lb-nav { display: none; }           /* swipe replaces arrows on touch */
+  .lb .hint { display: block; }
+  .lb-close { top: 12px; right: 12px; }
+
+  /* Performance: backdrop-filter is expensive on mobile GPUs */
+  header { backdrop-filter: none; background: linear-gradient(to bottom, rgba(14,16,20,.97), rgba(14,16,20,.6) 70%, transparent); }
+  .plate .pl { backdrop-filter: none; }
+}
+
+/* Keep arrows for touch-less small windows (e.g. narrow desktop) */
+@media (max-width: 820px) and (hover: hover) {
+  .lb-nav { display: block; }
+  .lb .hint { display: none; }
+}
+
+/* ---------- ≥ 2200px : 34"/49" ultrawides ---------- */
+@media (min-width: 2200px) {
+  .wrap, .hero-inner { max-width: 1720px; }
+  .darkroom { max-width: 1500px; }
+}
+
+/* ---------- Motion & accessibility ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+  html { scroll-behavior: auto; }
+}

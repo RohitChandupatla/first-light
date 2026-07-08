@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0E1014">
+<meta name="description" content="FirstLight — Captures. Made in the hour before the day begins.">
+<title>FirstLight — Captures</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/views.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header>
+  <button class="brand" data-action="go-section" data-target="top">
+    <b>FIRSTLIGHT</b><span>Captures</span>
+  </button>
+  <nav>
+    <button class="nav-link site-link" data-action="go-section" data-target="work"><span class="idx">01</span>Work</button>
+    <button class="nav-link site-link" data-action="go-section" data-target="collections"><span class="idx">02</span>Collections</button>
+    <button class="nav-link site-link" data-action="go-section" data-target="statement"><span class="idx">03</span>Statement</button>
+    <button class="nav-link darkroom-link" data-action="open-darkroom">Darkroom</button>
+  </nav>
+</header>
+
+<!-- ================= PUBLIC SITE ================= -->
+<main id="site">
+
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <div class="reveal">
+        <div class="eyebrow">Est. Dallas, TX</div>
+        <h1>Made in the<br>hour before<br>the day <em>begins.</em></h1>
+        <p class="sub" id="heroSub"></p>
+        <div class="hero-actions">
+          <button class="btn btn-solid" data-action="go-section" data-target="work">See the work →</button>
+          <button class="btn btn-ghost" data-action="open-darkroom">Open the Darkroom</button>
+        </div>
+      </div>
+      <aside class="hero-index reveal">
+        <div class="ttl">Index</div>
+        <div class="toc" id="heroToc"></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="sec-num">§ 01 — Selected Work</span><h2>The Plates</h2></div>
+        <div class="meta" id="workMeta">Contact sheet</div>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div id="demoTag" class="demo-tag" style="display:none">Demo plates — bring in your own frames via the Darkroom and these disappear.</div>
+      <div class="plate-grid" id="grid"></div>
+      <div class="empty-note" id="emptyNote" style="display:none">
+        Nothing published in this series yet.<br><b>Open the Darkroom</b> to bring in frames.
+      </div>
+    </div>
+  </section>
+
+  <section id="collections">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div><span class="sec-num">§ 02 — Bodies of Work</span><h2>Collections</h2></div>
+        <div class="meta" id="colMeta"></div>
+      </div>
+      <div class="col-list" id="colList"></div>
+    </div>
+  </section>
+
+  <section id="statement">
+    <div class="statement">
+      <div class="body reveal">
+        <span class="sec-num">§ 03 — Statement</span>
+        <p class="lede" id="stmtLede"></p>
+        <p class="note" id="stmtNote"></p>
+      </div>
+      <div class="reveal">
+        <div class="specs-ttl">Kit &amp; Process</div>
+        <div class="specs" id="specsList"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= DARKROOM ================= -->
+<div class="darkroom" id="darkroom">
+  <div class="dr-head">
+    <div>
+      <span class="k">Private — for the photographer</span>
+      <h2>The Darkroom</h2>
+      <p id="drStatus">Bring in new frames, develop the details, and decide what the world sees.</p>
+    </div>
+    <button class="btn btn-ghost" data-action="show-site">← Back to portfolio</button>
+  </div>
+
+  <div class="dr-tabs">
+    <button class="dr-tab active" data-tab="bringin" data-action="dr-tab">Bring in frames</button>
+    <button class="dr-tab" data-tab="develop" data-action="dr-tab">Develop &amp; publish</button>
+    <button class="dr-tab" data-tab="studio" data-action="dr-tab">Studio details</button>
+  </div>
+
+  <!-- Bring in -->
+  <section class="dr-panel active" id="bringin" style="padding:0">
+    <div class="drop" id="dropzone" data-action="picker-open">
+      <div class="ic">▽ Drop to bring in</div>
+      <h3>Add photos &amp; film</h3>
+      <p>Drag frames here, or tap to choose from your device.</p>
+      <div class="mono">JPG · PNG · WEBP · MP4 · MOV · WEBM</div>
+      <input type="file" id="picker" multiple accept="image/*,video/*">
+    </div>
+    <div class="progress" id="progress"><div class="bar" id="progressBar"></div></div>
+
+    <div class="staged" id="staged"></div>
+
+    <div class="form" id="batchForm" style="display:none">
+      <div class="fg"><label for="batchGear">Shot on (applies to batch)</label><input id="batchGear" type="text" placeholder="Sony A7 IV · 85mm f/1.8"></div>
+      <div class="fg"><label for="batchLoc">Location</label><input id="batchLoc" type="text" placeholder="Marfa, TX"></div>
+      <div class="fg"><label for="batchDate">Date taken</label><input id="batchDate" type="date"></div>
+      <div class="fg full"><label for="batchStory">The story behind these frames</label><textarea id="batchStory" placeholder="What was happening? Light, mood, why it matters…"></textarea></div>
+    </div>
+    <div class="dr-actions" id="publishActions" style="display:none">
+      <button class="btn btn-ghost" data-action="publish-draft">Save as drafts</button>
+      <button class="btn btn-solid" data-action="publish-live">Publish to portfolio</button>
+    </div>
+  </section>
+
+  <!-- Develop & publish -->
+  <section class="dr-panel" id="develop" style="padding:0">
+    <div class="dr-list" id="manageList"></div>
+    <div class="empty-note" id="manageEmpty" style="display:none">No frames in the Darkroom yet. Bring some in first.</div>
+  </section>
+
+  <!-- Studio details -->
+  <section class="dr-panel" id="studio" style="padding:0">
+    <div class="form">
+      <div class="fg full"><label for="setStmt">Statement (first line visitors read)</label><textarea id="setStmt"></textarea></div>
+      <div class="fg full"><label for="setNote">Statement — supporting note</label><textarea id="setNote"></textarea></div>
+      <div class="fg"><label for="setHero">Hero sub-line</label><input id="setHero" type="text"></div>
+      <div class="fg"><label for="setEmail">Contact email</label><input id="setEmail" type="email" placeholder="studio@firstlight.co"></div>
+      <div class="fg"><label for="setIg">Instagram</label><input id="setIg" type="text" placeholder="@firstlight"></div>
+      <div class="fg"><label for="setBase">Based in</label><input id="setBase" type="text" placeholder="Dallas, TX"></div>
+      <div class="fg full"><label for="setKit">Kit &amp; process (one per line, "Label: Value")</label><textarea id="setKit"></textarea></div>
+    </div>
+    <div class="dr-actions"><button class="btn btn-solid" data-action="save-settings">Save studio details</button></div>
+
+    <div style="margin-top:38px">
+      <div class="specs-ttl">Where your work lives right now</div>
+      <div class="store-note">
+        <div class="store-cell"><div class="k">This device</div><div class="big" id="usageBig">—</div><div class="sm">Stored in your browser's own database (IndexedDB). Private, free, survives refresh &amp; restart.</div></div>
+        <div class="store-cell"><div class="k">Frames</div><div class="big" id="countBig">0</div><div class="sm" id="countSm">photos &amp; films in the Darkroom.</div></div>
+        <div class="store-cell"><div class="k">Going public</div><div class="big">$0</div><div class="sm">When ready, swap the repository layer to Firebase + Cloudinary free tiers for a real URL.</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ================= LIGHTBOX ================= -->
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Plate viewer">
+  <div class="stage">
+    <button class="lb-close" data-action="lb-close" aria-label="Close">×</button>
+    <button class="lb-nav prev" data-action="lb-prev" aria-label="Previous">‹</button>
+    <div id="lbMediaHolder" style="display:contents"></div>
+    <button class="lb-nav next" data-action="lb-next" aria-label="Next">›</button>
+    <div class="hint">Swipe · down to close</div>
+  </div>
+  <div class="side">
+    <div class="pl" id="lbpl"></div>
+    <h3 id="lbtitle"></h3>
+    <p class="desc" id="lbdesc"></p>
+    <div class="exif" id="lbexif"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div class="big">Let's make<br>something at dawn.</div>
+    <div class="foot-links">
+      <a id="fIg" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a id="fMail" href="#">Email</a>
+      <a href="#top">Back to top</a>
+    </div>
+  </div>
+  <div class="foot-legal">
+    <span>© 2026 FirstLight — Captures</span>
+    <span id="footBase">Dallas, TX</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
