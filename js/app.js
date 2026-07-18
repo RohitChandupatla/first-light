@@ -96,6 +96,8 @@ const actions = {
   'plate-feature': (el) => Darkroom.toggleFeature(el.dataset.id),
   'login': () => doLogin(),
   'logout': () => doLogout(),
+  'open-contact': () => $('contactModal').classList.add('active'),
+  'close-contact': () => $('contactModal').classList.remove('active'),
   
 
 };
@@ -143,6 +145,35 @@ function bindReveals() {
     });
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+}
+
+/* ---------------- Contact form ---------------- */
+const cf = $('contactForm');
+if (cf) {
+  cf.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const status = $('contactStatus');
+    status.textContent = 'Sending…';
+    status.style.color = 'var(--fog)';
+    try {
+      const res = await fetch(cf.action, {
+        method: 'POST',
+        body: new FormData(cf),
+        headers: { Accept: 'application/json' },
+      });
+      if (res.ok) {
+        status.textContent = "Sent — thank you. I'll be in touch.";
+        status.style.color = 'var(--ok)';
+        cf.reset();
+      } else {
+        status.textContent = 'Something went wrong. Please try again.';
+        status.style.color = 'var(--warn)';
+      }
+    } catch {
+      status.textContent = 'Network error. Please try again.';
+      status.style.color = 'var(--warn)';
+    }
+  });
 }
 
 /* ---------------- Boot ---------------- */
