@@ -203,9 +203,16 @@ export function applySettings(s) {
       return `<div class="srow"><span class="k">${esc(l.slice(0, i).trim())}</span><span class="v">${esc(l.slice(i + 1).trim())}</span></div>`;
     }).join('');
 
-  const ig = $('fIg'); const mail = $('fMail');
-  if (s.ig) { ig.style.display = ''; ig.href = `https://instagram.com/${s.ig.replace('@', '')}`; } else ig.style.display = 'none';
-  if (s.email) { mail.style.display = ''; mail.href = `mailto:${s.email}`; } else mail.style.display = 'none';
+const ig = $('fIg');
+  if (ig) {
+    if (s.ig) { ig.style.display = ''; ig.href = `https://instagram.com/${s.ig.replace('@', '')}`; }
+    else ig.style.display = 'none';
+  }
+  const mail = $('fMail');
+  if (mail) {
+    if (s.email) { mail.style.display = ''; mail.href = `mailto:${s.email}`; }
+    else mail.style.display = 'none';
+  }
 }
 
 export async function saveSettingsForm() {
