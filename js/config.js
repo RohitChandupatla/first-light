@@ -11,7 +11,7 @@
  */
 export const BACKEND = 'firebase';
 
-export const COLLECTIONS = ['Portraiture', 'Cinematic Film', 'On Location', 'Events', 'Landscape'];
+export const COLLECTIONS = ['Portraiture', 'Cinematic Film', 'Highlight Video', 'On Location', 'Events', 'Landscape'];
 
 export const DB = {
   NAME: 'firstlight',
@@ -56,7 +56,7 @@ export function demoPlates() {
     ['Ren, in Window Light', 'Portraiture', 'image', 'Natural light only — the ten soft minutes.'],
     ["Maker's Hands", 'Events', 'image', 'Events detail work for a craft studio.'],
     ['Coast Road, First Fog', 'On Location', 'image', 'Fog rolling off the water at first light.'],
-    ['Dawn Sequence — frame 118', 'Cinematic Film', 'video', 'The closing frame of a dawn sequence.'],
+    ['Event Highlight Reel', 'Highlight Video', 'video', 'A recap mixing the best moments of the event.'],
   ];
   return rows.map(([title, collection, type, story], i) => ({
     demo: true, id: `demo${i}`, title, collection, type, story,
