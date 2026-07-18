@@ -83,7 +83,7 @@ const actions = {
   'lb-prev': () => Lightbox.step(-1),
   'lb-next': () => Lightbox.step(1),
   'dr-tab': (el) => Darkroom.switchTab(el.dataset.tab),
-  'picker-open': () => $('picker').click(),
+  'picker-open': (el, e) => { if (e) e.stopPropagation(); $('picker').click(); },
   'stage-remove': (el) => Darkroom.stageRemove(el.dataset.id),
   'publish-live': () => Darkroom.publishStaged(true),
   'publish-draft': () => Darkroom.publishStaged(false),
@@ -104,7 +104,7 @@ document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-action]');
   if (!el) return;
   const fn = actions[el.dataset.action];
-  if (fn) { e.preventDefault(); fn(el); }
+  if (fn) { e.preventDefault(); fn(el, e); }
 });
 
 // Keyboard "Enter" opens plates (grid items are role=button)
