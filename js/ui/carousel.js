@@ -31,7 +31,7 @@ export function render(featured) {
             ? `<div class="car-bg" style="background-image:url('${mediaSrc(pool, p.thumb)}')"></div>
                <video class="car-media" muted loop playsinline preload="metadata" poster="${mediaSrc(pool, p.thumb)}"><source src="${mediaSrc(pool, p.blob)}"></video>`
             : `<div class="car-bg" style="background-image:url('${mediaSrc(pool, p.blob || p.thumb)}')"></div>
-               <img class="car-media" src="${mediaSrc(pool, p.blob || p.thumb)}" alt="${esc(p.title || '')}">`}
+               <img class="car-media" src="${mediaSrc(pool, p.blob || p.thumb)}" alt="${esc(p.title || '')}" onload="this.classList.add('loaded')">`}
         </div>`).join('')}
     </div>
     ${slides.length > 1 ? `

@@ -57,8 +57,8 @@ function renderGrid() {
     const span = GRID_SPANS[i % GRID_SPANS.length];
     const exif = [p.gear, p.location].filter(Boolean).join(' · ') || (p.type === 'video' ? 'Film' : 'Photograph');
     const media = p.demo
-      ? `<div class="photo" style="background:${p.bg}"></div>`
-      : `<img class="photo" src="${mediaSrc(pool, p.thumb)}" alt="${esc(p.title)}" loading="lazy" decoding="async">`;
+      ? `<div class="photo" data-demo style="background:${p.bg}"></div>`
+      : `<img class="photo" src="${mediaSrc(pool, p.thumb)}" alt="${esc(p.title)}" loading="lazy" decoding="async" onload="this.classList.add('loaded')">`;
     return `
       <div class="plate ${span}" data-action="open-plate" data-index="${i}" role="button" tabindex="0">
         <span class="pl">Pl. ${String(i + 1).padStart(2, '0')}</span>

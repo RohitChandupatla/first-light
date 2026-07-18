@@ -80,14 +80,7 @@ export function stageRemove(id) {
 
 export async function publishStaged(live) {
   if (!staged.length) return;
-  const val = (id) => $(id)?.value.trim() ?? '';   // null-safe — won't crash if a field is missing
-  const meta = {
-    gear: val('batchGear'),
-    location: val('batchLoc'),
-    dateTaken: val('batchDate'),
-    story: val('batchStory'),
-  };
-  const batch = staged.map((p) => ({ ...p, ...meta, published: live }));
+  const batch = staged.map((p) => ({ ...p, published: live }));
   try {
     await Plates.saveMany(batch);
   } catch (e) {
@@ -99,7 +92,6 @@ export async function publishStaged(live) {
   const n = staged.length;
   staged = [];
   renderStaged();
-  ['batchGear', 'batchLoc', 'batchDate', 'batchStory'].forEach((id) => { const el = $(id); if (el) el.value = ''; });
   toast(live ? `Published ${n} plate${n > 1 ? 's' : ''} — live on your portfolio.` : `Saved ${n} draft${n > 1 ? 's' : ''}.`);
   if (live) switchTab('develop');
 }
