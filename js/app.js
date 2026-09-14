@@ -82,7 +82,10 @@ const actions = {
   'lb-close': () => Lightbox.close(),
   'lb-prev': () => Lightbox.step(-1),
   'lb-next': () => Lightbox.step(1),
-  'dr-tab': (el) => Darkroom.switchTab(el.dataset.tab),
+  'dr-tab': (el) => {
+    Darkroom.switchTab(el.dataset.tab);
+    if (el.dataset.tab === 'studio') Darkroom.refreshUpgradeStatus();
+  },
   'picker-open': (el, e) => { if (e) e.stopPropagation(); $('picker').click(); },
   'stage-remove': (el) => Darkroom.stageRemove(el.dataset.id),
   'publish-live': () => Darkroom.publishStaged(true),
@@ -94,12 +97,11 @@ const actions = {
   'edit-cancel': () => Darkroom.renderManage(),
   'save-settings': () => Darkroom.saveSettingsForm(),
   'plate-feature': (el) => Darkroom.toggleFeature(el.dataset.id),
+  'run-upgrade': () => Darkroom.runUpgrade(),
   'login': () => doLogin(),
   'logout': () => doLogout(),
   'open-contact': () => $('contactModal').classList.add('active'),
   'close-contact': () => $('contactModal').classList.remove('active'),
-  
-
 };
 
 document.addEventListener('click', (e) => {
@@ -178,15 +180,21 @@ if (cf) {
 
 /* ---------------- Boot ---------------- */
 (async function boot() {
+  // Paint the page structure immediately — never wait on the network.
+  Lightbox.bind();
+  bindReveals();
+  Darkroom.applyDefaultSettings();   // hero text shows instantly
+
   await db.open();
   if (db.isMemoryMode()) {
     $('drStatus').textContent = 'Note: this environment cannot persist between sessions — open via a local server or normal browser for full persistence.';
   }
-  await Darkroom.loadSettingsForm();
-  await Gallery.render();
-  await refreshFeatured();
-  Lightbox.bind();
-  bindReveals();
+
+  // Data loads in the background; the page is already usable.
+  Promise.all([
+    Darkroom.loadSettingsForm(),
+    Gallery.render().then(() => refreshFeatured()),
+  ]);
 
   // Console/dev API — handy for debugging & tests, not used by the UI.
   window.__FL = { Gallery, Lightbox, Darkroom, openDarkroom, showSite };

@@ -4,9 +4,10 @@
  * (upload + staging), develop & publish (manage), and studio
  * details (settings).
  */
-import { COLLECTIONS } from '../config.js';
+import { COLLECTIONS, DEFAULT_SETTINGS } from '../config.js';
 import { Plates, Settings } from '../services/data.js';
 import { makeImageThumb, makeVideoPoster } from '../services/media.js';
+import { findOutdated, upgradeAll } from '../services/upgrade.js';
 import { $, esc, fmtBytes, toast, URLPool, mediaSrc } from '../core/dom.js';
 
 const stagePool = new URLPool();
@@ -183,6 +184,11 @@ export async function saveEditor(id) {
 }
 
 /* ---------------- Settings ---------------- */
+/** Paint hero/statement instantly from defaults, before Firebase responds. */
+export function applyDefaultSettings() {
+  applySettings(DEFAULT_SETTINGS);
+}
+
 export async function loadSettingsForm() {
   const s = await Settings.load();
   $('setStmt').value = s.stmt; $('setNote').value = s.note; $('setHero').value = s.hero;
@@ -203,7 +209,7 @@ export function applySettings(s) {
       return `<div class="srow"><span class="k">${esc(l.slice(0, i).trim())}</span><span class="v">${esc(l.slice(i + 1).trim())}</span></div>`;
     }).join('');
 
-const ig = $('fIg');
+  const ig = $('fIg');
   if (ig) {
     if (s.ig) { ig.style.display = ''; ig.href = `https://instagram.com/${s.ig.replace('@', '')}`; }
     else ig.style.display = 'none';
@@ -224,6 +230,46 @@ export async function saveSettingsForm() {
   await Settings.save(s);
   applySettings(s);
   toast('Studio details saved.');
+}
+
+/* ---------------- One-time image upgrade ---------------- */
+export async function refreshUpgradeStatus() {
+  const box = $('upgradeStatus');
+  if (!box) return;
+  try {
+    const outdated = await findOutdated();
+    const btn = $('upgradeBtn');
+    if (!outdated.length) {
+      box.textContent = 'All images are on the latest quality pipeline.';
+      if (btn) btn.disabled = true;
+    } else {
+      box.textContent = `${outdated.length} image${outdated.length > 1 ? 's' : ''} can be upgraded to sharper, faster versions.`;
+      if (btn) btn.disabled = false;
+    }
+  } catch {
+    box.textContent = 'Could not check image versions.';
+  }
+}
+
+export async function runUpgrade() {
+  const btn = $('upgradeBtn');
+  const box = $('upgradeStatus');
+  const bar = $('upgradeBar');
+  if (btn) btn.disabled = true;
+  if (bar) bar.parentElement.classList.add('active');
+
+  const result = await upgradeAll(({ done, total, title, status }) => {
+    if (box) box.textContent = `${done} / ${total} — ${status === 'ok' ? 'upgraded' : 'skipped'} ${title}`;
+    if (bar) bar.style.width = `${(done / total) * 100}%`;
+  });
+
+  if (bar) { bar.style.width = '0'; bar.parentElement.classList.remove('active'); }
+  toast(result.failures.length
+    ? `Upgraded ${result.upgraded} of ${result.total}. ${result.failures.length} could not be read.`
+    : `Upgraded ${result.upgraded} image${result.upgraded === 1 ? '' : 's'}.`);
+  if (result.failures.length) console.warn('upgrade failures:', result.failures);
+  await refreshUpgradeStatus();
+  await renderManage();
 }
 
 /* ---------------- Tabs ---------------- */
