@@ -1,27 +1,87 @@
 /**
  * FIRST LIGHT — services/media.js
- * Client-side media processing: resized JPEG thumbnails for
- * photos, poster-frame capture for videos. Pure functions,
- * no app state.
+ * Every upload produces three assets:
+ *   blur    — ~32px JPEG data URI. Instant loading state, never a "bad photo".
+ *   grid    — resize for gallery tiles. Light and crisp.
+ *   display — larger resize for the carousel.
+ * The original file is kept separately for the lightbox.
  */
 import { MEDIA } from '../config.js';
 
-export function makeImageThumb(file, max = MEDIA.THUMB_MAX_PX) {
+function loadImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const u = URL.createObjectURL(file);
-    img.onload = () => {
-      const scale = Math.min(1, max / Math.max(img.width, img.height));
-      const c = document.createElement('canvas');
-      c.width = Math.round(img.width * scale);
-      c.height = Math.round(img.height * scale);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(u);
-      c.toBlob((b) => (b ? resolve(b) : reject(new Error('thumb encode failed'))), 'image/jpeg', MEDIA.THUMB_QUALITY);
-    };
+    img.onload = () => { img._url = u; resolve(img); };
     img.onerror = () => { URL.revokeObjectURL(u); reject(new Error('image load failed')); };
     img.src = u;
   });
+}
+
+function resizeTo(img, targetMax, quality) {
+  let sw = img.width, sh = img.height;
+  const scale = Math.min(1, targetMax / Math.max(sw, sh));
+  const tw = Math.round(sw * scale), th = Math.round(sh * scale);
+
+  let canvas = document.createElement('canvas');
+  let ctx = canvas.getContext('2d');
+  canvas.width = sw; canvas.height = sh;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0);
+
+  while (sw > tw * 2 && sh > th * 2) {
+    const nw = Math.max(tw, Math.round(sw / 2));
+    const nh = Math.max(th, Math.round(sh / 2));
+    const next = document.createElement('canvas');
+    next.width = nw; next.height = nh;
+    const nctx = next.getContext('2d');
+    nctx.imageSmoothingEnabled = true;
+    nctx.imageSmoothingQuality = 'high';
+    nctx.drawImage(canvas, 0, 0, nw, nh);
+    canvas = next; sw = nw; sh = nh;
+  }
+
+  const out = document.createElement('canvas');
+  out.width = tw; out.height = th;
+  const octx = out.getContext('2d');
+  octx.imageSmoothingEnabled = true;
+  octx.imageSmoothingQuality = 'high';
+  octx.drawImage(canvas, 0, 0, tw, th);
+
+  return new Promise((resolve, reject) => {
+    out.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', quality);
+  });
+}
+
+function blurFromCanvasSource(src, w, h) {
+  const scale = Math.min(1, MEDIA.BLUR_PX / Math.max(w, h));
+  const c = document.createElement('canvas');
+  c.width = Math.max(1, Math.round(w * scale));
+  c.height = Math.max(1, Math.round(h * scale));
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(src, 0, 0, c.width, c.height);
+  return c.toDataURL('image/jpeg', MEDIA.BLUR_QUALITY);
+}
+
+export async function processImage(file) {
+  const img = await loadImage(file);
+  try {
+    const blur = blurFromCanvasSource(img, img.width, img.height);
+    const grid = await resizeTo(img, MEDIA.GRID_MAX_PX, MEDIA.GRID_QUALITY);
+    const display = await resizeTo(img, MEDIA.DISPLAY_MAX_PX, MEDIA.DISPLAY_QUALITY);
+    return { blur, grid, display, width: img.width, height: img.height };
+  } finally {
+    if (img._url) URL.revokeObjectURL(img._url);
+  }
+}
+
+/** Legacy name kept for compatibility — returns the grid asset. */
+export async function makeImageThumb(file) {
+  const { grid } = await processImage(file);
+  return grid;
 }
 
 export function makeVideoPoster(file) {
@@ -33,10 +93,16 @@ export function makeVideoPoster(file) {
     v.onseeked = () => {
       const c = document.createElement('canvas');
       c.width = v.videoWidth; c.height = v.videoHeight;
-      c.getContext('2d').drawImage(v, 0, 0);
+      const ctx = c.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(v, 0, 0);
+      const blur = blurFromCanvasSource(c, c.width, c.height);
+      const duration = v.duration, w = v.videoWidth, h = v.videoHeight;
       URL.revokeObjectURL(u);
       c.toBlob(
-        (b) => (b ? resolve({ poster: b, duration: v.duration }) : reject(new Error('poster failed'))),
+        (b) => (b ? resolve({ poster: b, blur, duration, width: w, height: h })
+                  : reject(new Error('poster failed'))),
         'image/jpeg', MEDIA.POSTER_QUALITY,
       );
     };
