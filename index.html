@@ -177,6 +177,16 @@
     <div class="dr-actions"><button class="btn btn-solid" data-action="save-settings">Save studio details</button></div>
 
     <div style="margin-top:38px">
+      <div class="specs-ttl">Image quality</div>
+      <div class="upgrade-card">
+        <p id="upgradeStatus">Checking image versions…</p>
+        <div class="progress" id="upgradeProgress"><div class="bar" id="upgradeBar"></div></div>
+        <button class="btn btn-solid" id="upgradeBtn" data-action="run-upgrade" disabled>Upgrade older images</button>
+        <p class="upgrade-note">Rebuilds sharper display versions and instant-loading placeholders for photos uploaded before the current pipeline. Originals are never changed. Safe to re-run.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:38px">
       <div class="specs-ttl">Where your work lives right now</div>
       <div class="store-note">
         <div class="store-cell"><div class="k">This device</div><div class="big" id="usageBig">—</div><div class="sm">Stored in your browser's own database (IndexedDB). Private, free, survives refresh &amp; restart.</div></div>

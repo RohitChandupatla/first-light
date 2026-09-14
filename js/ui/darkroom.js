@@ -6,7 +6,8 @@
  */
 import { COLLECTIONS } from '../config.js';
 import { Plates, Settings } from '../services/data.js';
-import { makeImageThumb, makeVideoPoster } from '../services/media.js';
+import { processImage, makeVideoPoster } from '../services/media.js';
+import { findOutdated, upgradeAll } from '../services/upgrade.js';
 import { $, esc, fmtBytes, toast, URLPool, mediaSrc } from '../core/dom.js';
 
 const stagePool = new URLPool();
@@ -34,10 +35,13 @@ export async function ingest(files) {
         createdAt: Date.now(),
       };
       if (isVideo) {
-        const { poster, duration } = await makeVideoPoster(file);
-        entry.thumb = poster; entry.duration = duration;
+        const { poster, blur, duration, width, height } = await makeVideoPoster(file);
+        entry.thumb = poster; entry.grid = poster; entry.display = poster; entry.blur = blur;
+        entry.duration = duration; entry.width = width; entry.height = height;
       } else {
-        entry.thumb = await makeImageThumb(file);
+        const { blur, grid, display, width, height } = await processImage(file);
+        entry.thumb = grid; entry.grid = grid; entry.display = display; entry.blur = blur;
+        entry.width = width; entry.height = height;
       }
       staged.push(entry);
     } catch {
@@ -56,7 +60,7 @@ export function renderStaged() {
   stagePool.free();
   $('staged').innerHTML = staged.map((p) => `
     <div class="stage-item" data-id="${p.id}">
-      <img src="${mediaSrc(stagePool, p.thumb)}" alt="">
+      <img src="${mediaSrc(stagePool, p.grid || p.thumb)}" alt="">
       <select data-field="collection" aria-label="Collection">
         ${COLLECTIONS.map((c) => `<option ${p.collection === c ? 'selected' : ''}>${c}</option>`).join('')}
       </select>
@@ -103,7 +107,7 @@ export async function renderManage() {
   $('manageEmpty').style.display = all.length ? 'none' : 'block';
   $('manageList').innerHTML = all.map((p) => `
     <div class="dr-item" data-id="${p.id}">
-      <img class="thumb" src="${mediaSrc(managePool, p.thumb)}" alt="">
+      <img class="thumb" src="${mediaSrc(managePool, p.grid || p.thumb)}" alt="">
       <div>
         <div class="nm">${esc(p.title)}</div>
         <div class="sub">${esc(p.collection || '—')} · ${p.type === 'video' ? `film ${p.duration ? `${Math.round(p.duration)}s` : ''}` : 'photo'} · ${fmtBytes(p.size)}</div>
@@ -155,7 +159,7 @@ export async function openEditor(id) {
   const row = document.querySelector(`.dr-item[data-id="${id}"]`);
   if (!p || !row) return;
   row.innerHTML = `
-    <img class="thumb" src="${mediaSrc(managePool, p.thumb)}" alt="">
+    <img class="thumb" src="${mediaSrc(managePool, p.grid || p.thumb)}" alt="">
     <div class="dr-edit">
       <input type="text" value="${esc(p.title)}" data-edit="title" aria-label="Title">
       <select data-edit="collection" aria-label="Collection">
@@ -231,4 +235,47 @@ export function switchTab(name) {
   document.querySelectorAll('.dr-tab').forEach((t) => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.dr-panel').forEach((p) => p.classList.toggle('active', p.id === name));
   if (name === 'develop') renderManage();
+}
+
+
+/* ---------------- One-time image upgrade ---------------- */
+export async function refreshUpgradeStatus() {
+  const box = $('upgradeStatus');
+  if (!box) return;
+  try {
+    const outdated = await findOutdated();
+    const btn = $('upgradeBtn');
+    if (!outdated.length) {
+      box.textContent = 'All images are on the latest quality pipeline.';
+      if (btn) btn.disabled = true;
+    } else {
+      box.textContent = `${outdated.length} image${outdated.length > 1 ? 's' : ''} can be upgraded to sharper, faster versions.`;
+      if (btn) btn.disabled = false;
+    }
+  } catch {
+    box.textContent = 'Could not check image versions.';
+  }
+}
+
+export async function runUpgrade() {
+  const btn = $('upgradeBtn');
+  const box = $('upgradeStatus');
+  const bar = $('upgradeBar');
+  if (btn) btn.disabled = true;
+  if (bar) bar.parentElement.classList.add('active');
+
+  const result = await upgradeAll(({ done, total, title, status }) => {
+    if (box) box.textContent = `${done} / ${total} — ${status === 'ok' ? 'upgraded' : 'skipped'} ${title}`;
+    if (bar) bar.style.width = `${(done / total) * 100}%`;
+  });
+
+  if (bar) { bar.style.width = '0'; bar.parentElement.classList.remove('active'); }
+  if (result.failures.length) {
+    toast(`Upgraded ${result.upgraded} of ${result.total}. ${result.failures.length} could not be read.`);
+    console.warn('upgrade failures:', result.failures);
+  } else {
+    toast(`Upgraded ${result.upgraded} image${result.upgraded === 1 ? '' : 's'}.`);
+  }
+  await refreshUpgradeStatus();
+  await renderManage();
 }

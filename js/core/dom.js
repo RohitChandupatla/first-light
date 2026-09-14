@@ -31,3 +31,22 @@ export class URLPool {
 
 /** Media may be a Blob (local backend) or a URL string (cloud backend). */
 export const mediaSrc = (pool, m) => (typeof m === 'string' ? m : pool.url(m));
+
+/**
+ * Progressive image markup. Shows the tiny blur placeholder instantly,
+ * then fades in the sharp asset once decoded. The visitor never sees a
+ * soft image sitting there — only a clear loading state, then full clarity.
+ */
+export function progressiveImg(pool, plate, { cls = '', alt = '', eager = false, size = 'grid' } = {}) {
+  const asset = size === 'display' ? (plate.display || plate.grid || plate.thumb)
+                                   : (plate.grid || plate.thumb || plate.display);
+  const sharp = mediaSrc(pool, asset);
+  const blur = plate.blur || '';
+  const ratio = plate.width && plate.height ? `${plate.width} / ${plate.height}` : '';
+  return `<div class="pimg ${cls}"${ratio ? ` style="aspect-ratio:${ratio}"` : ''}>
+    ${blur ? `<img class="pimg-blur" src="${blur}" alt="" aria-hidden="true">` : ''}
+    <img class="pimg-sharp" src="${sharp}" alt="${esc(alt)}"
+         ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async"
+         onload="this.classList.add('ready')">
+  </div>`;
+}

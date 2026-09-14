@@ -26,9 +26,12 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 const auth = getAuth(app);
 
+let _cache = null;
+export const invalidate = () => { _cache = null; };
+
 const bus = new EventTarget();
 export const onPlatesChanged = (fn) => bus.addEventListener('plates:changed', fn);
-const emit = () => bus.dispatchEvent(new Event('plates:changed'));
+const emit = () => { _cache = null; bus.dispatchEvent(new Event('plates:changed')); };
 
 /* ---------------- Auth ---------------- */
 let currentUser = null;
@@ -54,32 +57,40 @@ async function uploadBlob(path, blob) {
 /** Firestore docs store URLs; the UI's `blob`/`thumb` fields become URL strings. */
 function fromDoc(d) {
   const p = d.data();
-  return { ...p, id: d.id, blob: p.fileURL, thumb: p.thumbURL };
+  return { ...p, id: d.id, blob: p.fileURL, thumb: p.thumbURL,
+           grid: p.gridURL || p.thumbURL, display: p.displayURL || p.gridURL || p.thumbURL };
 }
 
 function toDoc(p) {
-  const { blob, thumb, ...rest } = p;
+  const { blob, thumb, display, grid, ...rest } = p;
   return rest; // fileURL/thumbURL already set by save()
 }
 
 /* ---------------- Plates ---------------- */
 export const Plates = {
   async all() {
+    if (_cache) return _cache;
     const snap = await getDocs(query(collection(db, 'plates'), orderBy('createdAt', 'desc')));
-    return snap.docs.map(fromDoc);
+    _cache = snap.docs.map(fromDoc);
+    return _cache;
   },
   async published() {
     return (await this.all()).filter((p) => p.published);
   },
   async byId(id) {
+    if (_cache) { const hit = _cache.find((p) => p.id === id); if (hit) return hit; }
     const snap = await getDoc(doc(db, 'plates', id));
     return snap.exists() ? fromDoc(snap) : undefined;
   },
   async save(plate) {
     const p = { ...plate };
     if (p.blob instanceof Blob) p.fileURL = await uploadBlob(`plates/${p.id}/original`, p.blob);
+    if (p.display instanceof Blob) p.displayURL = await uploadBlob(`plates/${p.id}/display.jpg`, p.display);
+    if (p.grid instanceof Blob) p.gridURL = await uploadBlob(`plates/${p.id}/grid.jpg`, p.grid);
     if (p.thumb instanceof Blob) p.thumbURL = await uploadBlob(`plates/${p.id}/thumb.jpg`, p.thumb);
     if (typeof p.blob === 'string') p.fileURL = p.blob;
+    if (typeof p.display === 'string') p.displayURL = p.display;
+    if (typeof p.grid === 'string') p.gridURL = p.grid;
     if (typeof p.thumb === 'string') p.thumbURL = p.thumb;
     await setDoc(doc(db, 'plates', p.id), toDoc(p));
     emit();
@@ -89,6 +100,8 @@ export const Plates = {
       // reuse save() but defer the event until the batch is done
       const q = { ...p };
       if (q.blob instanceof Blob) q.fileURL = await uploadBlob(`plates/${q.id}/original`, q.blob);
+      if (q.display instanceof Blob) q.displayURL = await uploadBlob(`plates/${q.id}/display.jpg`, q.display);
+      if (q.grid instanceof Blob) q.gridURL = await uploadBlob(`plates/${q.id}/grid.jpg`, q.grid);
       if (q.thumb instanceof Blob) q.thumbURL = await uploadBlob(`plates/${q.id}/thumb.jpg`, q.thumb);
       await setDoc(doc(db, 'plates', q.id), toDoc(q));
     }

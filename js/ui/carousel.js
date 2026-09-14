@@ -2,7 +2,7 @@
  * FIRST LIGHT — ui/carousel.js
  * Featured showcase at the top of the gallery.
  */
-import { $, esc, URLPool, mediaSrc } from '../core/dom.js';
+import { $, esc, URLPool, mediaSrc, progressiveImg } from '../core/dom.js';
 
 const pool = new URLPool();
 let slides = [];
@@ -28,10 +28,10 @@ export function render(featured) {
       ${slides.map((p, i) => `
         <div class="car-slide ${i === 0 ? 'active' : ''}" data-i="${i}">
           ${p.type === 'video'
-            ? `<div class="car-bg" style="background-image:url('${mediaSrc(pool, p.thumb)}')"></div>
-               <video class="car-media" muted loop playsinline preload="metadata" poster="${mediaSrc(pool, p.thumb)}"><source src="${mediaSrc(pool, p.blob)}"></video>`
-            : `<div class="car-bg" style="background-image:url('${mediaSrc(pool, p.blob || p.thumb)}')"></div>
-               <img class="car-media" src="${mediaSrc(pool, p.blob || p.thumb)}" alt="${esc(p.title || '')}" onload="this.classList.add('loaded')">`}
+            ? `<div class="car-bg" style="background-image:url('${p.blur || mediaSrc(pool, p.display || p.thumb)}')"></div>
+               <video class="car-media" muted loop playsinline preload="metadata" poster="${mediaSrc(pool, p.display || p.grid || p.thumb)}"><source src="${mediaSrc(pool, p.blob)}"></video>`
+            : `<div class="car-bg" style="background-image:url('${p.blur || mediaSrc(pool, p.display || p.thumb)}')"></div>
+               ${progressiveImg(pool, p, { cls: 'car-media', alt: p.title || '', eager: i === 0, size: 'display' })}`}
         </div>`).join('')}
     </div>
     ${slides.length > 1 ? `

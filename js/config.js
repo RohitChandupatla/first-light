@@ -20,9 +20,19 @@ export const DB = {
 };
 
 export const MEDIA = {
-  THUMB_MAX_PX: 1400,
-  THUMB_QUALITY: 0.86,
-  POSTER_QUALITY: 0.82,
+  /** Grid tiles render ~400-700px wide; 1280 stays crisp on retina, stays light. */
+  GRID_MAX_PX: 1280,
+  GRID_QUALITY: 0.88,
+  /** Carousel spans the full column — needs more pixels. */
+  DISPLAY_MAX_PX: 2048,
+  DISPLAY_QUALITY: 0.92,
+  /** Tiny inline placeholder shown while the sharp image loads. */
+  BLUR_PX: 32,
+  BLUR_QUALITY: 0.45,
+  POSTER_QUALITY: 0.85,
+  /** Legacy aliases. */
+  THUMB_MAX_PX: 1280,
+  THUMB_QUALITY: 0.88,
 };
 
 /** Editorial monograph rhythm — repeats every 7 plates. */

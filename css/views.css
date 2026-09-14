@@ -116,3 +116,8 @@ video.media { width: min(100%, 1000px); }
 .contact-close:hover { border-color: var(--dawn-4); color: var(--dawn-4); }
 .contact-h { font-family: var(--font-serif); font-weight: 400; font-size: 1.9rem; margin: 6px 0 22px; }
 .contact-status { font-family: var(--font-mono); font-size: .66rem; margin-top: 14px; min-height: 1.2em; }
+/* ---------- Image upgrade card ---------- */
+.upgrade-card { background: var(--ink-2); border: 1px solid var(--line); padding: 24px; }
+.upgrade-card p { font-size: .9rem; color: var(--paper); margin-bottom: 16px; }
+.upgrade-card .progress { margin-bottom: 16px; }
+.upgrade-note { font-size: .78rem !important; color: var(--fog) !important; font-weight: 300; margin: 16px 0 0 !important; line-height: 1.6; }
