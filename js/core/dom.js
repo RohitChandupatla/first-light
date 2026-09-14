@@ -38,8 +38,12 @@ export const mediaSrc = (pool, m) => (typeof m === 'string' ? m : pool.url(m));
  * soft image sitting there — only a clear loading state, then full clarity.
  */
 export function progressiveImg(pool, plate, { cls = '', alt = '', eager = false, size = 'grid' } = {}) {
-  const asset = size === 'display' ? (plate.display || plate.grid || plate.thumb)
-                                   : (plate.grid || plate.thumb || plate.display);
+  // Older plates may only have `thumb`; never resolve to an empty src.
+  const chain = size === 'display'
+    ? [plate.display, plate.grid, plate.thumb, plate.blob]
+    : [plate.grid, plate.thumb, plate.display, plate.blob];
+  const asset = chain.find((a) => a);
+  if (!asset) return '';
   const sharp = mediaSrc(pool, asset);
   const blur = plate.blur || '';
   const ratio = plate.width && plate.height ? `${plate.width} / ${plate.height}` : '';
