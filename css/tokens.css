@@ -1,0 +1,41 @@
+/* ============================================================
+   FIRST LIGHT — Design Tokens
+   Single source of truth. Change the theme here, nowhere else.
+   ============================================================ */
+:root {
+  /* Ink — blue-hour blacks */
+  --ink:   #0E1014;
+  --ink-2: #171A20;
+  --ink-3: #20242C;
+
+  /* Paper & fog — text scale */
+  --paper:   #ECEAE3;
+  --fog:     #8C918F;
+  --fog-dim: #5A5F63;
+
+  /* Lines */
+  --line:        rgba(236, 234, 227, .12);
+  --line-strong: rgba(236, 234, 227, .22);
+
+  /* Dawn — the single warm accent */
+  --dawn-3: #A9764E;
+  --dawn-4: #C99A6E;
+
+  /* Semantic */
+  --ok:   #7FA98C;
+  --warn: #C97A6E;
+
+  /* Type */
+  --font-body:  'Archivo', sans-serif;
+  --font-serif: 'Instrument Serif', serif;
+  --font-mono:  'Space Mono', monospace;
+
+  /* Rhythm */
+  --pad-page: 32px;
+  --touch: 42px;          /* minimum touch target */
+  --wrap: 1360px;
+  --wrap-hero: 1500px;
+
+  /* Motion */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+}
